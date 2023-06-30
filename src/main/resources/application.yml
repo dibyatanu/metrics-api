@@ -16,5 +16,8 @@ logging:
   level:
     org :
       hibernate :
-        SQL : ERROR
-      springframework : ERROR
+        SQL : INFO
+      springframework : INFO
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

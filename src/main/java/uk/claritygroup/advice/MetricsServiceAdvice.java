@@ -10,7 +10,7 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 
 @Slf4j
 @RestControllerAdvice
-public class MetricsServiceAdvice {
+public final class MetricsServiceAdvice {
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<String> notFound(final RuntimeException exception){
         log.error("INVALID_RESPONSE: "+ exception.getLocalizedMessage());

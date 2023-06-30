@@ -20,7 +20,7 @@ import uk.claritygroup.service.MetricsService;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class MerticsResourceTest extends BaseTest {
+public class MetricsResourceTest extends BaseTest {
     @Mock
     private MetricsService metricsService;
     @InjectMocks
@@ -83,7 +83,6 @@ public class MerticsResourceTest extends BaseTest {
             assertThat(idCaptor.getValue()).isEqualTo(1l);
         }
     }
-
     @Nested
     class GetMetricSummary{
         @Test@DisplayName("should call metrics service summary")
@@ -97,8 +96,6 @@ public class MerticsResourceTest extends BaseTest {
             assertThat(toDateCaptor.getValue().get()).isEqualTo(1499070300000L);
 
         }
-
-
     }
 
 }

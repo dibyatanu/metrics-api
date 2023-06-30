@@ -1,17 +1,29 @@
 # mertics-api
 ###Building the project
-####Tools Used
-. Java 17
-. docker
-. docker-compose
-. Postgres Database
-. PGAdmin for  GUI tool
+####Tools required:
+* Java 17
+* Gradle 7.5 and above
+* docker
+* docker-compose
+* Postgres Database (in docker)
 
-Running the project:
-docker  must be installed
-docker-compose up -d
+####Prerequisite
+* Docker Compose must be installed to run Postgres Data Base
 
-docker-compose stop
+###Build, run unit and integration test and  run application
+* To spin up Postgress DB `$ docker-compose up -d`
+* To stop Postgress DB `$ docker-compose stop`
+
+####To build application
+`$ ./gradlew clean build`
+
+####To run unit and integration test
+`$ ./gradlew test`
+
+####To run application
+`$ ./gradlew bootRun` (Note: Postgres DB  should up and running)
+####Swagger UI
+* http://localhost:8080/swagger-ui.html
 
 
 
