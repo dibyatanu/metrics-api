@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 import uk.claritygroup.BaseTest;
 import uk.claritygroup.entity.MetricsEntity;
+import uk.claritygroup.exception.BadRequestException;
 import uk.claritygroup.repository.MetricsRepository;
 import uk.claritygroup.utility.DateAndTimeUtil;
 
@@ -17,8 +18,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MetricsServiceTest extends BaseTest{
@@ -29,9 +29,9 @@ public class MetricsServiceTest extends BaseTest{
     @Captor
     private ArgumentCaptor<MetricsEntity> metricsEntityArgumentCaptor;
     private  final MetricsEntity metricsEntityWithValueOf1 = MetricsEntity
-            .builder().id(1L).system("system").name("name").date(LocalDateTime.now()).value(1).build();
+            .builder().id(1L).system("system").name("name").date(LocalDateTime.of(1,1,1,1,1)).value(1).build();
     private  final MetricsEntity metricsEntityWithValueOf4 = MetricsEntity
-            .builder().id(1L).system("system").name("name").date(LocalDateTime.now()).value(4).build();
+            .builder().id(1L).system("system").name("name").date(LocalDateTime.of(1,1,1,1,1)).value(4).build();
   @BeforeEach
     public void setUp(){
     new MockUp<DateAndTimeUtil>(){
@@ -74,6 +74,7 @@ public class MetricsServiceTest extends BaseTest{
                 metricsService.getMetrics(1l);
             });
            assertThat(exception.getMessage()).isEqualTo("The specified metric was not found");
+            verify(metricsRepository, times(0)).save(any());
             }
     }
 
@@ -96,8 +97,8 @@ public class MetricsServiceTest extends BaseTest{
             when(metricsRepository.findById(1L)).thenReturn(Optional.of(metricsEntityWithValueOf1));
             metricsService.updateMetrics(1L,updateMetrics);
             verify(metricsRepository).save(metricsEntityArgumentCaptor.capture());
-            assertThat(metricsEntityArgumentCaptor.getValue()).extracting("system","name","date","value")
-                    .isEqualTo(Arrays.asList("system2","name", LocalDateTime.of(1,1,1,1,1),3));
+            assertThat(metricsEntityArgumentCaptor.getValue()).extracting("value")
+                    .isEqualTo(3);
         }
         @Test
         @DisplayName("should update existing metrics value by 1 if value is not supplied")
@@ -105,8 +106,8 @@ public class MetricsServiceTest extends BaseTest{
             when(metricsRepository.findById(1L)).thenReturn(Optional.of(metricsEntityWithValueOf1));
             metricsService.updateMetrics(1L,updateMetricsWithMissingValue);
             verify(metricsRepository).save(metricsEntityArgumentCaptor.capture());
-            assertThat(metricsEntityArgumentCaptor.getValue()).extracting("system","name","date","value")
-                    .isEqualTo(Arrays.asList("system2","name", LocalDateTime.of(1,1,1,1,1),2));
+            assertThat(metricsEntityArgumentCaptor.getValue()).extracting("value")
+                    .isEqualTo(2);
         }
         @Test
         @DisplayName("should throw resource not found exception")
@@ -116,6 +117,18 @@ public class MetricsServiceTest extends BaseTest{
                 metricsService.updateMetrics(1l,updateMetrics);
             });
             assertThat(exception.getMessage()).isEqualTo("The specified metric was not found");
+            verify(metricsRepository, times(0)).save(any());
+        }
+
+        @Test
+        @DisplayName("should throw 400 not supplied or is invalid, or system or name does not match the existing metric")
+        public void throwBadRequestWhenUpdateRequestDoesNotMatch(){
+            when(metricsRepository.findById(1L)).thenReturn(Optional.ofNullable(metricsEntityWithValueOf1));
+            var exception=Assertions.assertThrows(BadRequestException.class,() ->{
+                metricsService.updateMetrics(1l, updateMetricsWithNonExistingSystem);
+            });
+            assertThat(exception.getMessage()).isEqualTo("A required parameter was not supplied or is invalid, or system or name does not match the existing metric");
+            verify(metricsRepository, times(0)).save(any());
         }
     }
     @Nested

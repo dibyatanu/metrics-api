@@ -1,9 +1,5 @@
 package uk.claritygroup.specifications;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import uk.claritygroup.entity.MetricsEntity;
 import uk.claritygroup.entity.MetricsEntity_;

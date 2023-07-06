@@ -24,6 +24,10 @@
 `$ ./gradlew bootRun` (Note: Postgres DB  should up and running)
 ####Swagger UI
 * http://localhost:8080/swagger-ui.html
+####Spring Actuators
+* Run the application `$ ./gradlew bootRun`
+* Using terminal type `$ curl localhost:8080/actuator/health`
+
 
 
 

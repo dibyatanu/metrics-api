@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.claritygroup.entity.MetricsEntity;
+import uk.claritygroup.exception.BadRequestException;
 import uk.claritygroup.model.CreateMetrics;
 import uk.claritygroup.model.MetricsSummary;
 import uk.claritygroup.model.UpdateMetrics;
@@ -52,9 +54,13 @@ public class MetricsService {
         log.info("Creating metrics");
        return metricsRepository.save(metricsEntity);
     }
-
+    @Transactional
     public MetricsEntity updateMetrics(final Long id, final UpdateMetrics updateMetrics){
         var returnedMetrics= metricsRepository.findById(id).orElseThrow(()->new EntityNotFoundException("The specified metric was not found"));
+      if(!isMatch(updateMetrics,returnedMetrics)){
+            throw new BadRequestException("A required parameter was not supplied or is invalid, or system or name does not match the existing metric");
+        }
+
        var updatedMetrics= MetricsEntity
                                        .builder()
                                        .id(returnedMetrics.getId())
@@ -80,4 +86,10 @@ public class MetricsService {
                                        .to(toDate.isPresent()?toDate.get():null).value(totalValue).build();
     }
 
+
+    private Boolean isMatch(final UpdateMetrics updateMetrics,final MetricsEntity metricsEntity){
+        return  updateMetrics.getSystem().equals(metricsEntity.getSystem()) &&
+                updateMetrics.getName().equals(metricsEntity.getName()) &&
+                DateAndTimeUtil.convertFromUnixTime(Optional.ofNullable(updateMetrics.getDate())).equals(metricsEntity.getDate());
+    }
 }

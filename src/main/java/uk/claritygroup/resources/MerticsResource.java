@@ -85,7 +85,7 @@ public class MerticsResource {
             @ApiResponse(responseCode = "200", description = "The metric was recorded",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation =MetricsEntity.class)) }),
-            @ApiResponse(responseCode = "400", description = "A required parameter was not supplied or is invalid",
+            @ApiResponse(responseCode = "400", description = "A required parameter was not supplied or is invalid, or system or name does not match the existing metric",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "The specified metric was not found",
                     content = @Content)

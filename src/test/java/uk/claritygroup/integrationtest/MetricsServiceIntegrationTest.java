@@ -238,8 +238,8 @@ public class MetricsServiceIntegrationTest extends BaseTest {
     @Nested
     class UpdateMetric{
         @Test
-        @DisplayName("update metrics with all fields")
-        @Sql("classpath:test_data/seed_data.sql")
+        @DisplayName("update metrics with value should increment value by 2")
+        @Sql("classpath:test_data/seed_update_data.sql")
         public void updateMetrics(){
             var actualResponse= webTestClient.put()
                     .uri("/metrics/1")
@@ -249,11 +249,11 @@ public class MetricsServiceIntegrationTest extends BaseTest {
                     .expectStatus().isOk()
                     .expectBody(MetricsEntity.class)
                     .returnResult().getResponseBody();
-           assertThat(actualResponse).extracting("system").isEqualTo("system2");
+            assertThat(actualResponse).extracting("value").isEqualTo(3);
         }
         @Test
         @DisplayName("update metrics with missing value should increment value by 1")
-        @Sql("classpath:test_data/seed_data.sql")
+        @Sql("classpath:test_data/seed_update_data.sql")
         public void updateMetricsWithMissingValue(){
             var actualResponse= webTestClient.put()
                     .uri("/metrics/1")
@@ -321,6 +321,21 @@ public class MetricsServiceIntegrationTest extends BaseTest {
                     .expectBody(String.class)
                     .returnResult().getResponseBody();
             assertThat(actualResponse).contains("A required parameter was not supplied or is invalid");
+        }
+
+        @Test
+        @DisplayName("should throw 400 when update value does not match existing data ")
+        @Sql("classpath:test_data/seed_data.sql")
+        public void updateMetricsWithInvalidSystemName(){
+            var actualResponse= webTestClient.put()
+                    .uri("/metrics/1")
+                    .bodyValue(updateMetrics)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .exchange()
+                    .expectStatus().isBadRequest()
+                    .expectBody(String.class)
+                    .returnResult().getResponseBody();
+            assertThat(actualResponse).contains("A required parameter was not supplied or is invalid, or system or name does not match the existing metric");
         }
     }
 
