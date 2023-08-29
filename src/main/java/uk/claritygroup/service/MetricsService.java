@@ -1,8 +1,8 @@
 package uk.claritygroup.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +19,9 @@ import java.util.List;
 import java.util.Optional;
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MetricsService {
     private final MetricsRepository metricsRepository;
-
-    public MetricsService(@Autowired final MetricsRepository metricsRepository ){
-       this.metricsRepository=metricsRepository;
-    }
 
     public List<MetricsEntity> getMetricsByCriteria(final String system,final Optional<String> name,final Optional<Long> fromDate,final Optional<Long> toDate ) {
         log.info("getting list of metrics by criteria");
