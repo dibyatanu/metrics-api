@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/organization_statistics-db
+    username: postgres
+    password: postgres
+
+  jpa :
+    properties:
+      hibernate:
+        show_sql : true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto : create-drop
+
+logging:
+  level:
+    org :
+      hibernate :
+        SQL : INFO
+      springframework : INFO
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

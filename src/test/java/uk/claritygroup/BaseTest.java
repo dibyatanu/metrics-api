@@ -20,11 +20,8 @@ public abstract class BaseTest {
     protected final UpdateMetrics updateMetricsWithMissingName = new UpdateMetrics("system", null,1499070300000l,2);
     protected final UpdateMetrics updateMetricsWithMissingDate = new UpdateMetrics("system", "name",null,2);
     protected final UpdateMetrics updateMetricsWithNonExistingSystem = new UpdateMetrics("system2", "1499070300000l",null,2);
+  //  protected final uk.claritygroup.kotlin.model.request.CreateMetrics um= new uk.claritygroup.kotlin.model.request.CreateMetrics("system",null,null,0);
 
-    public static void main(String args[]){
-       System.out.println( DateAndTimeUtil.convertFromUnixTime(Optional.ofNullable(1499070300000l)));
-       System.out.println(LocalDateTime.of(2017,7,3,9,25));
-    }
 }
 
 

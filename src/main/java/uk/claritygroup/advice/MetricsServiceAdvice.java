@@ -21,12 +21,19 @@ public final class MetricsServiceAdvice {
     @ExceptionHandler(value = {org.hibernate.exception.ConstraintViolationException.class,
             jakarta.validation.ConstraintViolationException.class,WebExchangeBindException.class,Exception.class})
     public ResponseEntity<String> invalidRequest(final RuntimeException exception){
-        log.error("INVALID_RESPONSE: "+ exception.getLocalizedMessage());
+        log.error("INVALID_RESPONSE: "+ exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("{\"message\":\"A required parameter was not supplied or is invalid\"}");
     }
     @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<String>  invalidUpdateRequest(final BadRequestException exception){
+        log.error("INVALID_RESPONSE: "+ exception.getLocalizedMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("{\"message\":\""+ exception.getMessage()+"\"}");
+    }
+
+    @ExceptionHandler(value = uk.claritygroup.kotlin.exception.BadRequestException.class)
+    public ResponseEntity<String>  invalidUpdateRequestKotlin(final uk.claritygroup.kotlin.exception.BadRequestException exception){
         log.error("INVALID_RESPONSE: "+ exception.getLocalizedMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("{\"message\":\""+ exception.getMessage()+"\"}");
